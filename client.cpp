@@ -24,13 +24,22 @@ int main(int argc, char* argv[]) {
     // request connection from cli  ent_socket to the address of the server
     connect(client_socket, (struct sockaddr*)&server_address, sizeof(server_address));
 
-    vector<char> buf(1024);
+    cout << "connected successfully" << endl;
+
+    while (true) {}
+
+    /*
+
     while (true) {
 
-        recv(client_socket, buf.data(), buf.size(), 0);
-        cout << buf.data() << endl;
+        char buf[1024] = {0};
+
+        recv(client_socket, buf, sizeof(buf), 0);
+        cout << buf << endl;
 
     }
+
+    */
 
     // close the socket
     close(client_socket);

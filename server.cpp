@@ -12,15 +12,13 @@ void error(string msg) {
     exit(1);
 }
 
-/*
-
 // handles communication between server and a specific client. Should terminate itself when client disconnects.
-void client_handler(int client_socket, vector<int>& client_sockets) {
+void client_handler(int client_socket, vector<int>* client_sockets) {
 
     char buffer[1024];
 
     while (recv(client_socket, buffer, sizeof(buffer), 0) == 0) {
-        for (int client_socket : client_sockets) {
+        for (int client_socket : *client_sockets) {
             send(client_socket, buffer, strlen(buffer), 0);
         }
     }
@@ -28,21 +26,27 @@ void client_handler(int client_socket, vector<int>& client_sockets) {
 }
 
 // function that listens on the server socket and creates a client_handler() thread every time it accepts a new connection.
-void listener(int server_socket, vector<int>& client_sockets) {
-    
+void listener(int server_socket, vector<int>* client_sockets) {
+
     while (true) {
 
         listen(server_socket, QUEUE_SIZE);
         int client_socket = accept(server_socket, nullptr, nullptr);
-        client_sockets.push_back(client_socket);
+        (*client_sockets).push_back(client_socket);
 
-        thread com_thread(client_handler, client_socket, client_sockets);
+        cout << "client connected" << endl;
+
+        //thread com_thread(client_handler, client_socket, client_sockets);
 
     }
 
-}
+    /*
+    for (int i = 0; i < client_threads.size(); i++) {
+        client_threads[i].join();
+    }
+    */
 
-*/
+}
 
 int main(int argc, char* argv[]) {
 
@@ -60,13 +64,8 @@ int main(int argc, char* argv[]) {
 
     vector<int> client_sockets = {};
 
-    //thread listen_thread(listener, server_socket, client_sockets);
-
-    //listen_thread.join();
-
-    while (true) {}
-
-
+    thread listen_thread(listener, server_socket, &client_sockets);
+    listen_thread.join();
 
     /*
 
