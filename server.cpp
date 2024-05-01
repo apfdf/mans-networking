@@ -12,6 +12,8 @@ void error(string msg) {
     exit(1);
 }
 
+/*
+
 // handles communication between server and a specific client. Should terminate itself when client disconnects.
 void client_handler(int client_socket, vector<int>& client_sockets) {
 
@@ -40,6 +42,8 @@ void listener(int server_socket, vector<int>& client_sockets) {
 
 }
 
+*/
+
 int main(int argc, char* argv[]) {
 
     // create the server socket
@@ -56,9 +60,9 @@ int main(int argc, char* argv[]) {
 
     vector<int> client_sockets = {};
 
-    thread listen_thread(listener, server_socket, client_sockets);
+    //thread listen_thread(listener, server_socket, client_sockets);
 
-    listen_thread.join();
+    //listen_thread.join();
 
     while (true) {}
 
