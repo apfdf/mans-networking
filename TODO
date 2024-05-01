@@ -1,0 +1,10 @@
+
+The structure of the project will be as follows:
+- multiple clients can connect to the server
+- clients and the server can send information to each other
+- the groups of information that will be shared between the nodes:
+    - information sent to all clients
+    - information sent to specific clients
+    - information recieved from specific clients
+- the information sent to all clients can be changed continuosly, or when there is something to send
+- get this thing working for a simple chat server
