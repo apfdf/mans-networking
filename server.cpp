@@ -18,15 +18,31 @@ void client_com(int com_client_socket, vector<int>* client_sockets, mutex* clien
 
     cout << "com thread started" << endl;
 
+    char username[BUFFER_SIZE] = {0};
+    recv(com_client_socket, username, sizeof(username), 0);
+    if (!username[0]) {
+        return;
+    }
+
     while (true) {
 
         char buffer[BUFFER_SIZE] = {0};
         recv(com_client_socket, buffer, sizeof(buffer), 0);
+
+        if (!buffer[0]) {
+            cout << "client disconnected" << endl;
+            break;
+        }
+
         cout << buffer << endl;
+
+        string mes = (string)username + ": " + (string)buffer;
 
         (*client_sockets_m).lock();
         for (int client_socket : *client_sockets) {
-            send(client_socket, buffer, strlen(buffer), 0);
+            if (client_socket != com_client_socket) {
+                send(client_socket, mes.c_str(), strlen(mes.c_str()), 0);
+            }
         }
         (*client_sockets_m).unlock();
 
@@ -53,12 +69,6 @@ void listener(int server_socket, vector<int>* client_sockets, mutex* client_sock
         com_threads.push_back(thread(client_com, client_socket, client_sockets, client_sockets_m));
 
     }
-
-    /*
-    for (int i = 0; i < client_threads.size(); i++) {
-        client_threads[i].join();
-    }
-    */
 
 }
 

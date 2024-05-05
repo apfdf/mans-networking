@@ -54,6 +54,11 @@ int main(int argc, char* argv[]) {
 
     cout << "connected successfully" << endl;
 
+    string username;
+    cout << "username: ";
+    cin >> username;
+    send(client_socket, username.c_str(), sizeof(username.c_str()), 0);
+
     thread send_thread(sender, client_socket);
     thread recv_thread(reciever, client_socket);
 
