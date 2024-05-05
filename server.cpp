@@ -5,6 +5,7 @@
 using namespace std;
 
 #define QUEUE_SIZE 10
+#define BUFFER_SIZE 1024
 
 // outputs an error message and exits from the program
 void error(string msg) {
@@ -12,31 +13,44 @@ void error(string msg) {
     exit(1);
 }
 
-// handles communication between server and a specific client. Should terminate itself when client disconnects.
-void client_handler(int client_socket, vector<int>* client_sockets) {
+// awaits messages from a specific client and sends to all other clients
+void client_com(int com_client_socket, vector<int>* client_sockets, mutex* client_sockets_m) {
 
-    char buffer[1024];
+    cout << "com thread started" << endl;
 
-    while (recv(client_socket, buffer, sizeof(buffer), 0) == 0) {
+    while (true) {
+
+        char buffer[BUFFER_SIZE] = {0};
+        recv(com_client_socket, buffer, sizeof(buffer), 0);
+        cout << buffer << endl;
+
+        (*client_sockets_m).lock();
         for (int client_socket : *client_sockets) {
             send(client_socket, buffer, strlen(buffer), 0);
         }
+        (*client_sockets_m).unlock();
+
     }
 
 }
 
 // function that listens on the server socket and creates a client_handler() thread every time it accepts a new connection.
-void listener(int server_socket, vector<int>* client_sockets) {
+void listener(int server_socket, vector<int>* client_sockets, mutex* client_sockets_m) {
+
+    vector<thread> com_threads = {};
 
     while (true) {
 
         listen(server_socket, QUEUE_SIZE);
         int client_socket = accept(server_socket, nullptr, nullptr);
+
+        (*client_sockets_m).lock();
         (*client_sockets).push_back(client_socket);
+        (*client_sockets_m).unlock();
 
         cout << "client connected" << endl;
 
-        //thread com_thread(client_handler, client_socket, client_sockets);
+        com_threads.push_back(thread(client_com, client_socket, client_sockets, client_sockets_m));
 
     }
 
@@ -63,8 +77,9 @@ int main(int argc, char* argv[]) {
     bind(server_socket, (struct sockaddr*)&server_address, sizeof(server_address));
 
     vector<int> client_sockets = {};
+    mutex client_sockets_m;
 
-    thread listen_thread(listener, server_socket, &client_sockets);
+    thread listen_thread(listener, server_socket, &client_sockets, &client_sockets_m);
     listen_thread.join();
 
     /*

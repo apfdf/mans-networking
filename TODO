@@ -8,3 +8,6 @@ The structure of the project will be as follows:
     - information recieved from specific clients
 - the information sent to all clients can be changed continuosly, or when there is something to send
 - get this thing working for a simple chat server
+
+List of ideas:
+- different types of messages, each one cast from a string to some custom made struct (hashmap!!!???)

@@ -2,20 +2,26 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-void func(vector<int>* v) {
+void func(int id, mutex* m) {
 
-    for (int n : *v) {
-        cout << n << " ";
-    }
-    cout << endl;
+    m.lock();
+
+    cout << "sending from thread: " << id << '\n';
+
+    m.unlock();
 
 }
 
 int main() {
 
-    vector<int> v = {1, 2, 3};
+    mutex m;
 
-    thread t1(func, &v);
+    thread t1(func, 0, m);
+    thread t2(func, 1, m);
+    thread t3(func, 2, m);
+
     t1.join();
+    t2.join();
+    t3.join();
 
 }

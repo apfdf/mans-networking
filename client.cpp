@@ -4,10 +4,38 @@
 #include <arpa/inet.h>
 using namespace std;
 
+#define BUFFER_SIZE 1024
+
 // outputs an error message and exits from the program
 void error(string msg) {
     cerr << msg << endl;
     exit(1);
+}
+
+void sender(int client_socket) {
+
+    while (true) {
+
+        char buffer[BUFFER_SIZE] = {0};
+        cin >> buffer;
+
+        send(client_socket, buffer, strlen(buffer), 0);
+
+    }
+
+}
+
+void reciever(int client_socket) {
+
+    while (true) {
+        
+        char buffer[BUFFER_SIZE] = {0};
+        recv(client_socket, buffer, sizeof(buffer), 0);
+
+        cout << buffer << endl;
+
+    }
+
 }
 
 int main(int argc, char* argv[]) {
@@ -26,20 +54,20 @@ int main(int argc, char* argv[]) {
 
     cout << "connected successfully" << endl;
 
-    while (true) {}
+    thread send_thread(sender, client_socket);
+    thread recv_thread(reciever, client_socket);
 
-    /*
+    send_thread.join();
+    recv_thread.join();
 
     while (true) {
 
-        char buf[1024] = {0};
+        char buffer[1024] = {0};
+        cin >> buffer;
 
-        recv(client_socket, buf, sizeof(buf), 0);
-        cout << buf << endl;
+        send(client_socket, buffer, strlen(buffer), 0);
 
     }
-
-    */
 
     // close the socket
     close(client_socket);
