@@ -16,10 +16,15 @@ void sender(int client_socket) {
 
     while (true) {
 
-        char buffer[BUFFER_SIZE] = {0};
-        cin >> buffer;
+        string buffer;
 
-        send(client_socket, buffer, strlen(buffer), 0);
+        //char buffer[BUFFER_SIZE] = {0};
+        getline(cin, buffer);
+        //cin >> buffer;
+
+        cout << "test" << endl;
+
+        send(client_socket, buffer.c_str(), strlen(buffer.c_str()), 0);
 
     }
 

@@ -34,8 +34,6 @@ void client_com(int com_client_socket, vector<int>* client_sockets, mutex* clien
             break;
         }
 
-        cout << buffer << endl;
-
         string mes = (string)username + ": " + (string)buffer;
 
         (*client_sockets_m).lock();
